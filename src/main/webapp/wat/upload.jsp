@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form action="/upload" method="post" enctype="multipart/form-data">
+<form action="/wat/upload" method="post" enctype="multipart/form-data">
     <label for="pub">Publication:</label>
     <input type="file" name="pub" id="pub"><br>
     <input type="submit" value="Upload">

@@ -1,15 +1,15 @@
 package webadmintool;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.IOUtils;
-
 public class UploadHandler {
+
+    public static final String compressedPath =  "/home/aadwan/IdeaProjects/Lit/resources/submissions/compressed/";
 
     public void upload(HttpServletRequest request) throws IOException, ServletException {
 
@@ -17,13 +17,11 @@ public class UploadHandler {
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         InputStream fileInputStream = filePart.getInputStream();
         saveFile(fileName, fileInputStream);
-
+        request.getSession().setAttribute("newSubmission", fileName);
     }
 
     private void saveFile(String fileName, InputStream fileInputStream) throws IOException {
-
-        String submissionsPath = "/home/aadwan/IdeaProjects/Lit/resources/submissions/";
-        File file = new File(submissionsPath+fileName);
+        File file = new File(compressedPath+fileName);
         file.createNewFile();
         OutputStream outputStream = new FileOutputStream(file);
         byte[] buffer = new byte[1024];
@@ -32,7 +30,6 @@ public class UploadHandler {
             outputStream.write(buffer, 0, len);
             len = fileInputStream.read(buffer);
         }
-        //IOUtils.copy(fileInputStream, outputStream);
         fileInputStream.close();
         outputStream.close();
     }

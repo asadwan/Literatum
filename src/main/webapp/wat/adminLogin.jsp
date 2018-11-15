@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<form action="/login" method="post">
+<form action="login" method="post">
 
     <div>
         <h1>Admin Login</h1>

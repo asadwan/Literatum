@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("webadmintool/login")
+@WebServlet("/wat/login")
 public class AdminLoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("adminLogin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/wat/adminLogin.jsp").forward(req, resp);
     }
 
     @Override
@@ -34,9 +34,9 @@ public class AdminLoginServlet extends HttpServlet {
                     .asJson();
             System.out.println(authResponse.getBody().getObject().get("message"));
             if(authResponse.getStatus() == 200) {
-               resp.sendRedirect("/upload");
+               resp.sendRedirect("/wat/upload");
             } else {
-                resp.sendRedirect("/login");
+                resp.sendRedirect("/wat/login");
             }
         } catch (UnirestException e) {
             e.printStackTrace();

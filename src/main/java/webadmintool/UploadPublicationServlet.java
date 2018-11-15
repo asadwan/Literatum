@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(name = "UploadPublicationServlet", urlPatterns = "/upload")
+@WebServlet("/wat/upload")
 @MultipartConfig
 public class UploadPublicationServlet extends HttpServlet {
 
@@ -24,13 +24,13 @@ public class UploadPublicationServlet extends HttpServlet {
             if(!isAuthorized(request, response)) {return;}
             UploadHandler uploadHandler = new UploadHandler();
             uploadHandler.upload(request);
-            request.getRequestDispatcher("/popup.jsp").forward(request,response);
+            request.getRequestDispatcher("/wat/popup.jsp").forward(request,response);
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(!isAuthorized(request, response)) {return;}
-        request.getRequestDispatcher("/upload.jsp").forward(request,response);
+        request.getRequestDispatcher("/wat/upload.jsp").forward(request,response);
 
     }
 

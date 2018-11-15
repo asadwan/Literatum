@@ -14,7 +14,7 @@
 
 Uploaded Successfully
 
-<a href="/upload">Upload another file</a>
+<a href="/wat/upload">Upload another file</a>
 
 </body>
 </html>
