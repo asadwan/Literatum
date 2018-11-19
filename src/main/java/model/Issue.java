@@ -7,31 +7,85 @@ import java.util.Set;
 
 @Entity
 @Table(name = "issue")
-public class Issue {
+public class Issue implements Publication {
 
     @Column(name = "issue_id")
     @Id
-
     private String issueId;
 
-    @Column(name = "issue_title")
-    private String issueTitle;
+    @Column(name = "issue_number")
+    private int issueNumber;
+
+    @Column(name = "volume")
+    private int volume;
+
+    @Column(name = "issue_type")
+    private String issueType;
 
     @Column(name = "issue_pub_date")
-    private String issuePubDate;
+    private Date issuePubDate;
 
     @ManyToOne
     @JoinColumn(name = "journal_id")
     private Journal journal;
 
-    @OneToMany(mappedBy = "issue")
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private Set<Article> articles = new HashSet<>();
 
-    public Issue(String issueId, String issueTitle, String issuePubDate, Journal journal) {
-        this.issueId = issueId;
-        this.issueTitle = issueTitle;
+    public Issue() {
+    }
+
+    public Issue(int issueNumber, int volume, String issueType, Date issuePubDate) {
+        this.issueNumber = issueNumber;
+        this.volume = volume;
+        this.issueType = issueType;
         this.issuePubDate = issuePubDate;
-        this.journal = journal;
+    }
+
+    public void generateIssueId() {
+        this.issueId = journal.getId() + "_" + volume + "-" + issueNumber;
+    }
+
+    @Override
+    public String getId() {
+        return issueId;
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    public int getIssueNumber() {
+        return issueNumber;
+    }
+
+    public void setIssueNumber(int issueNumber) {
+        this.issueNumber = issueNumber;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
+
+    public String getIssueType() {
+        return issueType;
+    }
+
+    public void setIssueType(String issueType) {
+        this.issueType = issueType;
+    }
+
+    public Date getIssuePubDate() {
+        return issuePubDate;
+    }
+
+    public void setIssuePubDate(Date issuePubDate) {
+        this.issuePubDate = issuePubDate;
     }
 
     public Journal getJournal() {
@@ -48,31 +102,5 @@ public class Issue {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
-    }
-
-    public Issue() {}
-
-    public String getIssueId() {
-        return issueId;
-    }
-
-    public void setIssueId(String issueId) {
-        this.issueId = issueId;
-    }
-
-    public String getIssueTitle() {
-        return issueTitle;
-    }
-
-    public void setIssueTitle(String issueTitle) {
-        this.issueTitle = issueTitle;
-    }
-
-    public String getIssuePubDate() {
-        return issuePubDate;
-    }
-
-    public void setIssuePubDate(String issuePubDate) {
-        this.issuePubDate = issuePubDate;
     }
 }

@@ -4,38 +4,42 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "article")
-public class Article {
+public class Article implements Publication {
 
     @Column(name = "article_id")
     @Id
     private String articleId;
 
-    @Column(name = "article_name")
-    private String articleName;
+    @Column(name = "article_title")
+    private String articlTitle;
 
     @Column(name = "article_category")
     private String articleCategory;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "issue_id")
     private Issue issue;
 
-    public Article(String articleId, String articleName, String issueId, String articleCategory, Issue issue) {
+    public Article(String articleId, String articlTitle, String articleCategory) {
         this.articleId = articleId;
-        this.articleName = articleName;
+        this.articlTitle = articlTitle;
         this.articleCategory = articleCategory;
-        this.issue = issue;
     }
 
-    public Issue getIssue() {
-        return issue;
+    public Article() {}
+
+    @Override
+    public String getId() {
+        return this.getArticleId();
+    }
+
+    @Override
+    public String getTitle() {
+        return this.articlTitle;
     }
 
     public void setIssue(Issue issue) {
         this.issue = issue;
-    }
-
-    public Article() {
     }
 
     public String getArticleId() {
@@ -46,12 +50,12 @@ public class Article {
         this.articleId = articleId;
     }
 
-    public String getArticleName() {
-        return articleName;
+    public String getArticlTitle() {
+        return articlTitle;
     }
 
-    public void setArticleName(String articleName) {
-        this.articleName = articleName;
+    public void setArticlTitle(String articleName) {
+        this.articlTitle = articleName;
     }
 
     public String getArticleCategory() {

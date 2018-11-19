@@ -19,9 +19,8 @@ public class SubmissionUploadListener implements HttpSessionAttributeListener {
     }
 
     private void handleNewSubmission(HttpSessionBindingEvent event) {
-        String newSubmission = (String) event.getSession().getAttribute("newSubmission");;
+        String newSubmission = (String) event.getSession().getAttribute("newSubmission");
         SubmissionProcessor submissionProcessor = new SubmissionProcessor(newSubmission);
         submissionProcessor.process();
-
     }
 }

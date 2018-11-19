@@ -18,10 +18,10 @@ public class Test {
 //        JournalDAO.createJournal(journal);
 //        IssueDAO.createIssue(issue);
 
-        Journal journal = JournalDAO.getJournal("1925-3621");
-        for (Issue issue: journal.getIssues()) {
-            System.out.println(issue.getIssueId());
-        }
+//        Journal journal = JournalDAO.getJournal("1925-3621");
+//        for (Issue issue: journal.getIssues()) {
+//            System.out.println(issue.getIssueId());
+//        }
+//    }
     }
-
 }

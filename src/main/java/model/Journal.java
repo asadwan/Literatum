@@ -6,45 +6,46 @@ import java.util.Set;
 
 @Entity
 @Table(name = "journal")
-public class Journal {
+public class Journal implements Publication {
 
     @Column(length = 100, nullable = false, name = "journal_id")
     @Id
     private String journalId;
 
     @Column(length = 100, nullable = false, name = "journal_name")
-    private String journalName;
+    private String journalTitle;
 
     @Column(length = 100, nullable = false, name = "publisher_name")
     String publisherName;
 
 
-    @OneToMany(mappedBy = "journal")
+    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL)
     private Set<Issue> issues = new HashSet<>();
 
-    public Journal(String journalId, String journalName, String publisherName) {
+    public Journal(String journalId, String journalTitle, String publisherName) {
         this.journalId = journalId;
-        this.journalName = journalName;
+        this.journalTitle = journalTitle;
         this.publisherName = publisherName;
     }
 
-    public Journal() {
-    }
+    public Journal() {}
 
-    public String getJournalId() {
+    @Override
+    public String getId() {
         return journalId;
     }
 
-    public void setJournalId(String journalId) {
+    public void setId(String journalId) {
         this.journalId = journalId;
     }
 
-    public String getJournalName() {
-        return journalName;
+    @Override
+    public String getTitle() {
+        return journalTitle;
     }
 
-    public void setJournalName(String journalName) {
-        this.journalName = journalName;
+    public void setJournalTitle(String journalName) {
+        this.journalTitle = journalName;
     }
 
     public String getPublisherName() {

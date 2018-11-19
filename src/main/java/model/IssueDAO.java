@@ -1,32 +1,38 @@
 package model;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
-public class IssueDAO {
+import static utility.Utility.getSessionFactory;
 
-    public static SessionFactory getSessionFactory() {
 
-        // Creating Configuration Instance & Passing Hibernate Configuration File
-        Configuration configuration = new Configuration();
-        SessionFactory sessionFactory = configuration.configure().buildSessionFactory();
-        return sessionFactory;
-    }
+public class IssueDAO implements DAO {
 
-    public static void createIssue(Issue issue) {
+    @Override
+    public void create(Publication publication) {
+
         Session session = getSessionFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
+            Issue issue = (Issue) publication;
+            issue.generateIssueId();
             session.save(issue);
             transaction.commit();
-        } catch (Exception e) {
-            System.out.println("Error occurred while persisting issue " + issue.getIssueId());
+            session.close();
+        } catch (HibernateException e) {
+            System.out.println("An error has occurred while persisting issue " + publication.getId());
+            e.printStackTrace();
         } finally {
             session.close();
         }
     }
 
-
+    @Override
+    public Publication retrieve(String issueId) {
+        Session session = getSessionFactory().openSession();
+        Issue issue = session.get(Issue.class, issueId);
+        session.close();
+        return issue;
+    }
 }

@@ -1,31 +1,38 @@
 package model;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
-public class ArticleDAO {
+import static utility.Utility.getSessionFactory;
 
-    public static SessionFactory getSessionFactory() {
+public class ArticleDAO implements DAO {
 
-        // Creating Configuration Instance & Passing Hibernate Configuration File
-        Configuration configuration = new Configuration();
-        SessionFactory sessionFactory = configuration.configure().buildSessionFactory();
-        return sessionFactory;
-    }
+    @Override
+    public void create(Publication publication) {
 
-    public static void createArticle(Article article) {
         Session session = getSessionFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
+            Article article = (Article) publication;
             session.save(article);
             transaction.commit();
-        } catch (Exception e) {
-            System.out.println("Error occurred while persisting article " + article.getArticleName());
+            session.close();
+            System.out.println("Article \"" + article.getArticlTitle() + "\" metadata has been persisted to database.");
+        } catch (HibernateException e) {
+            System.out.println("An error has occurred while persisting article \"" + publication.getTitle() + "\"");
+            e.printStackTrace();
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public Publication retrieve(String publicationId) {
+        Session session = getSessionFactory().openSession();
+        Article article = session.get(Article.class, publicationId);
+        session.close();
+        return article;
     }
 
 }

@@ -1,37 +1,36 @@
 package model;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
-public class JournalDAO {
+import static utility.Utility.getSessionFactory;
 
-    public static SessionFactory getSessionFactory() {
+public class JournalDAO implements DAO {
 
-        // Creating Configuration Instance & Passing Hibernate Configuration File
-        Configuration configuration = new Configuration();
-        SessionFactory sessionFactory = configuration.configure().buildSessionFactory();
-        return sessionFactory;
-    }
+    @Override
+    public void create(Publication publication) {
 
-    public static void createJournal(Journal journal) {
         Session session = getSessionFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
+            Journal journal = (Journal) publication;
             session.save(journal);
             transaction.commit();
-        } catch (Exception e) {
+            session.close();
+        } catch (HibernateException e) {
+            System.out.println("an error has occurred while persisting journal " + publication.getTitle());
             e.printStackTrace();
-            System.out.println("Error occurred while persisting journal " + journal.getJournalName());
         } finally {
             session.close();
         }
     }
 
-    public static Journal getJournal(String journalId) {
+    @Override
+    public Publication retrieve(String journalId) {
         Session session = getSessionFactory().openSession();
-        Journal journal = session.load(Journal.class, journalId);
+        Journal journal = session.get(Journal.class, journalId);
+        session.close();
         return journal;
     }
 }
