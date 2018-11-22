@@ -11,7 +11,6 @@ public class UploadHandler {
     public static final String compressedPath =  "/home/aadwan/IdeaProjects/Lit/resources/submissions/compressed/";
 
     public void upload(HttpServletRequest request) throws IOException, ServletException {
-
         Part filePart = request.getPart("pub");
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         InputStream fileInputStream = filePart.getInputStream();

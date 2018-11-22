@@ -15,7 +15,7 @@ public class JournalMetadataExtractor implements MetadataExtractor {
         this.journalXmlFile = journalXmlFile;
     }
 
-    public Journal extract() {
+    public Journal extract() throws Exception {
         Document document = Utility.getDocument(journalXmlFile);
         Element rootElement = document.getRootElement();
         String issn = rootElement.getChild("journal-meta").getChild("issn").getValue();

@@ -21,16 +21,20 @@ public class UploadPublicationServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-            if(!isAuthorized(request, response)) {return;}
-            UploadHandler uploadHandler = new UploadHandler();
-            uploadHandler.upload(request);
-            request.getRequestDispatcher("/wat/popup.jsp").forward(request,response);
+        if (!isAuthorized(request, response)) {
+            return;
+        }
+        UploadHandler uploadHandler = new UploadHandler();
+        uploadHandler.upload(request);
+        request.getRequestDispatcher("/wat/upload.jsp").forward(request, response);
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(!isAuthorized(request, response)) {return;}
-        request.getRequestDispatcher("/wat/upload.jsp").forward(request,response);
+        if (!isAuthorized(request, response)) {
+            return;
+        }
+        request.getRequestDispatcher("/wat/upload.jsp").forward(request, response);
 
     }
 

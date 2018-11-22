@@ -16,7 +16,7 @@ public class IssueMetadataExtractor implements MetadataExtractor {
         this.issueXmlFile = issueXmlFile;
     }
 
-    public Issue extract() {
+    public Issue extract() throws Exception {
         Document document = Utility.getDocument(issueXmlFile);
         Element rootElement = document.getRootElement();
         String issueType = rootElement.getChild("issue-meta").getAttributeValue("issue-type");
@@ -24,7 +24,9 @@ public class IssueMetadataExtractor implements MetadataExtractor {
         String monthOfPub = rootElement.getChild("issue-meta").getChild("pub-date").getChild("month").getValue();
         String volume = rootElement.getChild("issue-meta").getChild("volume").getValue();
         String issueNumber = rootElement.getChild("issue-meta").getChild("issue").getValue();
-        Issue issue = new Issue(Integer.valueOf(issueNumber), Integer.valueOf(volume), issueType, getIssueDate(yearOfPub, monthOfPub));
+        String issueTitle = rootElement.getChild("issue-meta").getChildText("issue-title");
+        Issue issue = new Issue(issueTitle, Integer.valueOf(issueNumber), Integer.valueOf(volume),
+                issueType, getIssueDate(yearOfPub, monthOfPub));
         return issue;
     }
 

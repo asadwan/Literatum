@@ -12,27 +12,35 @@ public class SubmissionProcessor {
 
     private static final String COMPRESSED_PATH = "/home/aadwan/IdeaProjects/Lit/resources/submissions/compressed/";
     private static final String UNCOMPRESSED_PATH = "/home/aadwan/IdeaProjects/Lit/resources/submissions/uncompressed/";
+    private static final String JOURNALS_DIR_PATH = "/home/aadwan/IdeaProjects/Lit/resources/content/journals/";
     private String submission;
-
     private Journal journal;
     private Issue issue;
     private Article article;
+
+    private String issueDirPath;
 
     public SubmissionProcessor(String submission) {
         this.submission = submission;
     }
 
-    public void process() {
+    public boolean process() {
         unzip();
         File issueXmlFile = locateIssueXmlFile();
         File articleXmlFile = locateArticleXmlFile();
-        if (!isJournalPresent(issueXmlFile)) {
-            System.out.println("The journal this article belongs to does not exist, please create it" +
-                " using the Web Admin Tool and try again.");
-            return;
+        try {
+            if (!isJournalPresent(issueXmlFile)) {
+                System.out.println("The journal this article belongs to does not exist, please create it" +
+                        " using the Web Admin Tool and try again.");
+                return false;
+            }
+            processIssueData(issueXmlFile);
+            processArticleData(articleXmlFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        processIssueData(issueXmlFile);
-        processArticleData(articleXmlFile);
+        return true;
     }
 
     private void unzip() {
@@ -71,7 +79,7 @@ public class SubmissionProcessor {
         return articleXmlFile.get();
     }
 
-    private boolean isJournalPresent(File issueXmlFile) {
+    private boolean isJournalPresent(File issueXmlFile) throws Exception {
         MetadataExtractor jmde = new JournalMetadataExtractor(issueXmlFile);
         journal = (Journal)jmde.extract();
         DAO journalDAO = new JournalDAO();
@@ -79,7 +87,7 @@ public class SubmissionProcessor {
         return true;
     }
 
-    private void processIssueData(File issueXmlFile) {
+    private void processIssueData(File issueXmlFile) throws Exception {
         MetadataExtractor imde = new IssueMetadataExtractor(issueXmlFile);
         issue = (Issue)imde.extract();
         String issueId = journal.getId() + "_" + issue.getVolume() + "-" + issue.getIssueNumber();
@@ -90,16 +98,24 @@ public class SubmissionProcessor {
         }
         issue.setJournal(journal);
         issueDAO.create(issue);
+        issueDirPath = JOURNALS_DIR_PATH+journal.getId()+"/"+issueId;
+        File issueDir = new File(issueDirPath);
+        issueDir.mkdir();
         System.out.println("Issue " + issue.getId() + " metadata saved to database");
     }
 
-    private void processArticleData(File articleXmlFile) {
+    private void processArticleData(File articleXmlFile) throws Exception {
         MetadataExtractor amde = new ArticleMetadataExtractor(articleXmlFile);
         article = (Article)amde.extract();
         DAO articleDAO = new ArticleDAO();
         if (articleDAO.retrieve(article.getArticleId()) == null) {
             article.setIssue(issue);
             articleDAO.create(article);
+            String articleDirPath = issueDirPath + "/" + article.getId();
+            File articleDir = new File(articleDirPath);
+            articleDir.mkdir();
+            ArticleHtmlGenerator articleHtmlGenerator = new ArticleHtmlGenerator(articleDir, articleXmlFile);
+            articleHtmlGenerator.generate();
         }
     }
 }

@@ -6,10 +6,9 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/wat/login")
@@ -34,12 +33,34 @@ public class AdminLoginServlet extends HttpServlet {
                     .asJson();
             System.out.println(authResponse.getBody().getObject().get("message"));
             if(authResponse.getStatus() == 200) {
-               resp.sendRedirect("/wat/upload");
+               resp.sendRedirect("/wat");
             } else {
                 resp.sendRedirect("/wat/login");
             }
         } catch (UnirestException e) {
             e.printStackTrace();
+        }
+    }
+
+    @WebListener()
+    public static class UploadSuccessListener implements HttpSessionAttributeListener {
+
+        public void attributeAdded(HttpSessionBindingEvent sbe) {
+          /* This method is called when an attribute
+             is added to a session.
+          */
+        }
+
+        public void attributeRemoved(HttpSessionBindingEvent sbe) {
+          /* This method is called when an attribute
+             is removed from a session.
+          */
+        }
+
+        public void attributeReplaced(HttpSessionBindingEvent sbe) {
+          /* This method is invoked when an attibute
+             is replaced in a session.
+          */
         }
     }
 }

@@ -11,7 +11,7 @@ public class Article implements Publication {
     private String articleId;
 
     @Column(name = "article_title")
-    private String articlTitle;
+    private String articleTitle;
 
     @Column(name = "article_category")
     private String articleCategory;
@@ -20,9 +20,9 @@ public class Article implements Publication {
     @JoinColumn(name = "issue_id")
     private Issue issue;
 
-    public Article(String articleId, String articlTitle, String articleCategory) {
+    public Article(String articleId, String articleTitle, String articleCategory) {
         this.articleId = articleId;
-        this.articlTitle = articlTitle;
+        this.articleTitle = articleTitle;
         this.articleCategory = articleCategory;
     }
 
@@ -35,7 +35,7 @@ public class Article implements Publication {
 
     @Override
     public String getTitle() {
-        return this.articlTitle;
+        return this.articleTitle;
     }
 
     public void setIssue(Issue issue) {
@@ -50,12 +50,12 @@ public class Article implements Publication {
         this.articleId = articleId;
     }
 
-    public String getArticlTitle() {
-        return articlTitle;
+    public String getArticleTitle() {
+        return articleTitle;
     }
 
-    public void setArticlTitle(String articleName) {
-        this.articlTitle = articleName;
+    public void setArticleTitle(String articleName) {
+        this.articleTitle = articleName;
     }
 
     public String getArticleCategory() {

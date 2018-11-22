@@ -1,6 +1,7 @@
 package model;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,17 +26,21 @@ public class Issue implements Publication {
     @Column(name = "issue_pub_date")
     private Date issuePubDate;
 
+    @Column(name="issue_title")
+    private String issueTitle;
+
     @ManyToOne
     @JoinColumn(name = "journal_id")
     private Journal journal;
 
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Article> articles = new HashSet<>();
 
     public Issue() {
     }
 
-    public Issue(int issueNumber, int volume, String issueType, Date issuePubDate) {
+    public Issue(String issueTitle, int issueNumber, int volume, String issueType, Date issuePubDate) {
+        this.issueTitle = issueTitle;
         this.issueNumber = issueNumber;
         this.volume = volume;
         this.issueType = issueType;
@@ -53,11 +58,15 @@ public class Issue implements Publication {
 
     @Override
     public String getTitle() {
-        return null;
+        return issueTitle;
     }
 
     public int getIssueNumber() {
         return issueNumber;
+    }
+
+    public void setIssueTitle(String issueTitle) {
+        this.issueTitle = issueTitle;
     }
 
     public void setIssueNumber(int issueNumber) {
@@ -80,8 +89,10 @@ public class Issue implements Publication {
         this.issueType = issueType;
     }
 
-    public Date getIssuePubDate() {
-        return issuePubDate;
+    public String getIssuePubDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.issuePubDate);
+        return calendar.get(Calendar.YEAR) + " - " + calendar.get(Calendar.MONTH);
     }
 
     public void setIssuePubDate(Date issuePubDate) {

@@ -4,5 +4,5 @@ import model.Publication;
 
 public interface MetadataExtractor  {
 
-    Publication extract();
+    Publication extract() throws Exception;
 }

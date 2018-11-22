@@ -12,14 +12,14 @@ public class Journal implements Publication {
     @Id
     private String journalId;
 
-    @Column(length = 100, nullable = false, name = "journal_name")
+    @Column(length = 100, nullable = false, name = "journal_title")
     private String journalTitle;
 
     @Column(length = 100, nullable = false, name = "publisher_name")
     String publisherName;
 
 
-    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Issue> issues = new HashSet<>();
 
     public Journal(String journalId, String journalTitle, String publisherName) {

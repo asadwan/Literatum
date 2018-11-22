@@ -10,28 +10,25 @@ import java.io.IOException;
 
 public final class Utility {
 
-    public static Document getDocument(File xmlFile) {
+    public static Document getDocument(File xmlFile) throws Exception {
         SAXBuilder saxBuilder = new SAXBuilder();
         saxBuilder.setValidation(false);
-        saxBuilder.setFeature("http://xml.org/sax/features/namespaces", false);
-        saxBuilder.setFeature("http://xml.org/sax/features/validation", false);
+//        saxBuilder.setFeature("http://xml.org/sax/features/namespaces", false);
+//        saxBuilder.setFeature("http://xml.org/sax/features/validation", false);
         saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
         saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         Document document = null;
         try {
             document = saxBuilder.build(xmlFile);
-        } catch (JDOMException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            throw new Exception();
         }
         return document;
     }
 
     public static SessionFactory getSessionFactory() {
-
         Configuration configuration = new Configuration();
-        SessionFactory sessionFactory = configuration.configure().buildSessionFactory();
-        return sessionFactory;
+        return configuration.configure().buildSessionFactory();
     }
 }
