@@ -24,6 +24,7 @@ public class SubmissionUploadListener implements HttpSessionAttributeListener {
     private void handleNewSubmission(HttpSessionBindingEvent event) {
         String newSubmission = (String) event.getValue();
         SubmissionProcessor submissionProcessor = new SubmissionProcessor(newSubmission);
+        event.getSession().removeAttribute(event.getName());
         boolean success = submissionProcessor.process();
         if(success) {
             event.getSession().setAttribute("uploadSuccessful", "true");

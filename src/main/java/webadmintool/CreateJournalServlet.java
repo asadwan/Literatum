@@ -1,6 +1,8 @@
 package webadmintool;
 
 
+import model.Journal;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,8 +18,9 @@ public class CreateJournalServlet extends HttpServlet {
         String issn = req.getParameter("issn");
         String title = req.getParameter("title");
         String publisher = req.getParameter("publisher");
-        CreateJournalhandler createJournalhandler = new CreateJournalhandler();
-        boolean success = createJournalhandler.create(issn, title, publisher);
+        Journal journal = new Journal(issn, title, publisher);
+        CreateJournalhandler createJournalhandler = new CreateJournalhandler(journal, req.getSession());
+        boolean success = createJournalhandler.create();
         String message = success ? "true" : "false";
         req.setAttribute("creationSuccessful", message);
         req.getRequestDispatcher("/wat/create-journal.jsp").forward(req, resp);

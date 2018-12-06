@@ -1,8 +1,8 @@
 package frontend;
 
-import model.DAO;
 import model.Journal;
 import model.JournalDAO;
+import model.PublicationDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +18,7 @@ public class JournalServlet extends HttpServlet {
         String path = req.getPathInfo();
         String[] pathParts = path.split("/");
         String journalId = pathParts[1];
-        DAO journalDAO = new JournalDAO();
+        PublicationDAO journalDAO = new JournalDAO();
         Journal journal = (Journal) journalDAO.retrieve(journalId);
         if(journal == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);

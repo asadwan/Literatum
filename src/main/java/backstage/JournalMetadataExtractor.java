@@ -1,7 +1,7 @@
 package backstage;
 
-import utility.Utility;
 import model.Journal;
+import utility.Utility;
 import org.jdom2.Document;
 import org.jdom2.Element;
 

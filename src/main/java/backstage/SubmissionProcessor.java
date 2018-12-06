@@ -1,12 +1,16 @@
 package backstage;
 
+import com.google.common.io.Files;
 import model.*;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.core.ZipFile;
+import utility.Utility;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 public class SubmissionProcessor {
 
@@ -17,7 +21,7 @@ public class SubmissionProcessor {
     private Journal journal;
     private Issue issue;
     private Article article;
-
+    private String submissionDirPath;
     private String issueDirPath;
 
     public SubmissionProcessor(String submission) {
@@ -45,8 +49,10 @@ public class SubmissionProcessor {
 
     private void unzip() {
         String destinationFolder = submission.split("\\.")[0];
-        File destinationDir = new File(UNCOMPRESSED_PATH + destinationFolder);
+        submissionDirPath = UNCOMPRESSED_PATH + destinationFolder;
+        File destinationDir = new File(submissionDirPath);
         boolean success = destinationDir.mkdir();
+        System.out.println(success);
         if (success) {
             try {
                 ZipFile zipFile = new ZipFile(COMPRESSED_PATH + submission);
@@ -58,8 +64,7 @@ public class SubmissionProcessor {
     }
 
     private File locateIssueXmlFile() {
-        String submissionPath = UNCOMPRESSED_PATH + submission.split("\\.")[0];
-        File submissionDir = new File(submissionPath);
+        File submissionDir = new File(submissionDirPath);
         Optional<File> subDir = Arrays.stream(submissionDir.listFiles(File::isDirectory)).findFirst();
         Optional<File> issueFilesDir = Arrays.stream(subDir.get().listFiles(File::isDirectory))
                 .filter(file -> file.getName().equalsIgnoreCase("issue-files")).findFirst();
@@ -69,8 +74,7 @@ public class SubmissionProcessor {
     }
 
     private File locateArticleXmlFile() {
-        String submissionPath = UNCOMPRESSED_PATH + submission.split("\\.")[0];
-        File submissionDir = new File(submissionPath);
+        File submissionDir = new File(submissionDirPath);
         Optional<File> subDir = Arrays.stream(submissionDir.listFiles(File::isDirectory)).findFirst();
         Optional<File> articleFilesDir = Arrays.stream(subDir.get().listFiles(File::isDirectory))
                 .filter(file -> !file.getName().equalsIgnoreCase("issue-files")).findFirst();
@@ -82,7 +86,7 @@ public class SubmissionProcessor {
     private boolean isJournalPresent(File issueXmlFile) throws Exception {
         MetadataExtractor jmde = new JournalMetadataExtractor(issueXmlFile);
         journal = (Journal)jmde.extract();
-        DAO journalDAO = new JournalDAO();
+        PublicationDAO journalDAO = new JournalDAO();
         if (journalDAO.retrieve(journal.getId()) == null) return false;
         return true;
     }
@@ -91,14 +95,14 @@ public class SubmissionProcessor {
         MetadataExtractor imde = new IssueMetadataExtractor(issueXmlFile);
         issue = (Issue)imde.extract();
         String issueId = journal.getId() + "_" + issue.getVolume() + "-" + issue.getIssueNumber();
-        DAO issueDAO = new IssueDAO();
+        PublicationDAO issueDAO = new IssueDAO();
+        issueDirPath = JOURNALS_DIR_PATH+journal.getId()+"/"+issueId;
         if (issueDAO.retrieve(issueId) != null) {
             issue = (Issue)issueDAO.retrieve(issueId);
             return;
         }
         issue.setJournal(journal);
         issueDAO.create(issue);
-        issueDirPath = JOURNALS_DIR_PATH+journal.getId()+"/"+issueId;
         File issueDir = new File(issueDirPath);
         issueDir.mkdir();
         System.out.println("Issue " + issue.getId() + " metadata saved to database");
@@ -107,15 +111,25 @@ public class SubmissionProcessor {
     private void processArticleData(File articleXmlFile) throws Exception {
         MetadataExtractor amde = new ArticleMetadataExtractor(articleXmlFile);
         article = (Article)amde.extract();
-        DAO articleDAO = new ArticleDAO();
+        PublicationDAO articleDAO = new ArticleDAO();
         if (articleDAO.retrieve(article.getArticleId()) == null) {
             article.setIssue(issue);
             articleDAO.create(article);
             String articleDirPath = issueDirPath + "/" + article.getId();
             File articleDir = new File(articleDirPath);
-            articleDir.mkdir();
             ArticleHtmlGenerator articleHtmlGenerator = new ArticleHtmlGenerator(articleDir, articleXmlFile);
             articleHtmlGenerator.generate();
+            copyMediaFilesToArticleDir(articleDir);
+        }
+    }
+
+    private void copyMediaFilesToArticleDir(File articleDir) throws IOException {
+        File submissionDir = new File(submissionDirPath);
+        Set<File> mediaFiles = Utility.getAllMediaFiles(submissionDir);
+        for (File mediaFile: mediaFiles) {
+            File dest = new File(articleDir + "/" + mediaFile.getName());
+            dest.createNewFile();
+            Files.copy(mediaFile, dest);
         }
     }
 }

@@ -42,6 +42,10 @@ public class Article implements Publication {
         this.issue = issue;
     }
 
+    public Issue getIssue() {
+        return issue;
+    }
+
     public String getArticleId() {
         return articleId;
     }

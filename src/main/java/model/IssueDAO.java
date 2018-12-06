@@ -13,7 +13,7 @@ import java.util.List;
 import static utility.Utility.getSessionFactory;
 
 
-public class IssueDAO implements DAO {
+public class IssueDAO implements PublicationDAO {
 
     @Override
     public void create(Publication publication) throws Exception {

@@ -18,6 +18,12 @@ public class Journal implements Publication {
     @Column(length = 100, nullable = false, name = "publisher_name")
     String publisherName;
 
+    @Column(name = "journal_description")
+    String description;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "license_id")
+    private License license;
 
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Issue> issues = new HashSet<>();
@@ -44,6 +50,10 @@ public class Journal implements Publication {
         return journalTitle;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setJournalTitle(String journalName) {
         this.journalTitle = journalName;
     }
@@ -63,4 +73,13 @@ public class Journal implements Publication {
     public void setIssues(Set<Issue> issues) {
         this.issues = issues;
     }
+
+    public License getLicense() {
+        return license;
+    }
+
+    public void setLicense(License license) {
+        this.license = license;
+    }
+
 }

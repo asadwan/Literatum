@@ -1,8 +1,8 @@
 package frontend;
 
-import model.DAO;
 import model.Issue;
 import model.IssueDAO;
+import model.PublicationDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +15,7 @@ import java.io.IOException;
 public class IssueServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String issueId = request.getPathInfo().split("/")[1];
-        DAO issueDAO = new IssueDAO();
+        PublicationDAO issueDAO = new IssueDAO();
         Issue issue;
         if((issue = (Issue) issueDAO.retrieve(issueId)) == null) {
             response.setStatus(404);

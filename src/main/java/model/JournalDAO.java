@@ -1,6 +1,5 @@
 package model;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -8,12 +7,11 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 
 import static utility.Utility.getSessionFactory;
 
-public class JournalDAO implements DAO {
+public class JournalDAO implements PublicationDAO {
 
     @Override
     public void create(Publication publication) throws Exception {

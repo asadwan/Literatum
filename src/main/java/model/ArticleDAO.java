@@ -8,16 +8,14 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 
 import static utility.Utility.getSessionFactory;
 
-public class ArticleDAO implements DAO {
+public class ArticleDAO implements PublicationDAO {
 
     @Override
     public void create(Publication publication) throws Exception {
-
         Session session = getSessionFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();

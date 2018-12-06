@@ -6,7 +6,6 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -14,53 +13,48 @@ import java.io.IOException;
 @WebServlet("/wat/login")
 public class AdminLoginServlet extends HttpServlet {
 
+    private String token;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/wat/adminLogin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/wat/login.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        System.out.println(username);
-        System.out.println(password);
         try {
-            HttpResponse<JsonNode> authResponse = Unirest.post("http://localhost:5000/auth/login")
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .field("username", username)
-                    .field("password", password)
-                    .asJson();
-            System.out.println(authResponse.getBody().getObject().get("message"));
+            HttpResponse<JsonNode> authResponse = requestAdminAuthentication(username, password);
             if(authResponse.getStatus() == 200) {
-               resp.sendRedirect("/wat");
+                token = (String) authResponse.getBody().getObject().get("token");
+                redirectToWATHomepage(req, resp, username);
             } else {
-                resp.sendRedirect("/wat/login");
+                redirectToWATLoginPage(req, resp);
             }
         } catch (UnirestException e) {
             e.printStackTrace();
         }
     }
 
-    @WebListener()
-    public static class UploadSuccessListener implements HttpSessionAttributeListener {
+    private void redirectToWATHomepage(HttpServletRequest req, HttpServletResponse resp, String username) throws IOException {
+        req.getSession().setAttribute("token", token);
+        req.getSession().setAttribute("username", username);
+        resp.sendRedirect("/wat");
+    }
 
-        public void attributeAdded(HttpSessionBindingEvent sbe) {
-          /* This method is called when an attribute
-             is added to a session.
-          */
-        }
+    private HttpResponse<JsonNode> requestAdminAuthentication(String username, String password) throws UnirestException {
+        return Unirest.post("http://localhost:5000/auth/login")
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .field("username", username)
+                        .field("password", password)
+                        .field("user-type", "admin")
+                        .field("requestedAccess", "wat")
+                        .asJson();
+    }
 
-        public void attributeRemoved(HttpSessionBindingEvent sbe) {
-          /* This method is called when an attribute
-             is removed from a session.
-          */
-        }
-
-        public void attributeReplaced(HttpSessionBindingEvent sbe) {
-          /* This method is invoked when an attibute
-             is replaced in a session.
-          */
-        }
+    private void redirectToWATLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.getSession().setAttribute("adminUserFailedLogin", true);
+        response.sendRedirect("/wat/login");
     }
 }
+
