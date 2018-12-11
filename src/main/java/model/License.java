@@ -15,7 +15,7 @@ public class License {
     @Column(name = "license_title")
     String licenseTitle;
 
-    @ManyToMany(mappedBy = "licenses", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "licenses", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<User> users = new HashSet<>();
 
     public License(String licenseId, String licenseTitle) {
