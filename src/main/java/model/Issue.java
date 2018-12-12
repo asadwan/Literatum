@@ -58,7 +58,7 @@ public class Issue implements Publication {
 
     @Override
     public String getTitle() {
-        if(issueTitle == null) return "Some issue";
+        if(issueTitle == null) return "Untitled issue";
         return issueTitle;
     }
 

@@ -41,7 +41,7 @@
 <body>
 <script>
     function showAlert(message) {
-        if(message == 'true') {
+        if (message == 'true') {
             alert('${journalCreationMessage}')
         } else if (message == 'false') {
             alert('${journalCreationMessage}')
@@ -55,22 +55,23 @@
 <div class="jumbotron text-center">
     <h1>Literatum Web Admin Tool</h1>
     <div id="logout">
-        <a href="/wat/logout"><button type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-log-out"></span> Log out
-        </button>
+        <a href="/wat/logout">
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-log-out"></span> Log out
+            </button>
         </a>
     </div>
     <br>
     <div><p><a href="/wat"><b>Home</b></a></p></div>
 </div>
-<br><br><br>
+<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-4 col-md-offset-5">
-            <form class="form-horizontal" action='/wat/create-journal' method="POST">
+            <form class="form-horizontal" action='/wat/create-journal' method="POST" id="create-journal-form">
                 <fieldset>
                     <div id="legend">
-                        <h3 class="">Create Journal</h3>
+                        <h2 class="">Create Journal</h2>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="issn">ISSN:</label>
@@ -87,6 +88,10 @@
                         <div class="controls">
                             <input type="text" id="publisher" name="publisher" class="input-xlarge"
                                    required>
+                        </div>
+                        <label class="control-label" for="desc">description:</label>
+                        <div class="controls">
+                              <textarea name="desc" id="desc" form="create-journal-form" placeholder="Enter description here..."></textarea>
                         </div>
                     </div>
                     <br>

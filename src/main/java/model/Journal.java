@@ -28,10 +28,11 @@ public class Journal implements Publication {
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Issue> issues = new HashSet<>();
 
-    public Journal(String journalId, String journalTitle, String publisherName) {
+    public Journal(String journalId, String journalTitle, String publisherName, String description) {
         this.journalId = journalId;
         this.journalTitle = journalTitle;
         this.publisherName = publisherName;
+        this.description = description;
     }
 
     public Journal() {}

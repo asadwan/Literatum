@@ -61,14 +61,13 @@
     <br>
     <div><p><a href="/wat"><b>Home</b></a></p></div>
 </div>
-<br>
 <div class="container">
     <div class="row">
         <div class="col-sm-4 col-md-offset-5">
             <form class="form-horizontal" action='/wat/create-user' method="POST">
                 <fieldset>
                     <div id="legend">
-                        <h3 class="">Create User</h3>
+                        <h2 class="">Create User</h2>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="name">Full Name:</label>
@@ -93,12 +92,10 @@
                         </div>
                         <label class="control-label">Licenses:</label>
                         <div>
-                            <input type="checkbox" name="licenses" value="29e1bf2a2ccc1166b8110f06271615a4"> Access to
-                            journal "Academic Forensic Pathology"<br>
-                            <input type="checkbox" name="licenses" value="aee4578858103bfda5f3dad95bf97dd1"> Access to
-                            journal "Behavioral Disorders"<br>
-                            <input type="checkbox" name="licenses" value="d3e79a29edfd981686b24067b8f0f764"> Access to
-                            journal "AADE in Practice"<br>
+                            <c:forEach var="journal" items="${journals}">
+                                <input type="checkbox" name="licenses" value="${journal.license.licenseId}"> Access to
+                                journal "${journal.title}"<br>
+                            </c:forEach>
                         </div>
                     </div>
                     <br>

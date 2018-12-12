@@ -1,5 +1,8 @@
 package webadmintool;
 
+import model.JournalDAO;
+import model.Publication;
+import model.PublicationDAO;
 import model.User;
 import utility.Utility;
 
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "CreateUserServlet", urlPatterns = "/wat/create-user")
 public class CreateUserServlet extends HttpServlet {
@@ -28,6 +32,9 @@ public class CreateUserServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PublicationDAO journalDAO = new JournalDAO();
+        List<Publication> journals =  journalDAO.getAllPublications();
+        request.setAttribute("journals", journals);
         request.getRequestDispatcher("/wat/create-user.jsp").forward(request, response);
     }
 }
